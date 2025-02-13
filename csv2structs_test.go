@@ -357,3 +357,21 @@ func TestParse_CustomTransform(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, []*Foo{{"baz"}}, resp)
 }
+
+func TestParse_LeadingByteOrderMark(t *testing.T) {
+	type Foo struct {
+		Foo string
+		Bar string
+	}
+
+	reader := strings.NewReader(
+		"\xEF\xBB\xBF" + // BOM
+			"foo,bar\n" + // header
+			"baz,foo\n", // row
+	)
+
+	resp, err := Parse[Foo](reader)
+
+	assert.NoError(t, err)
+	assert.Equal(t, []*Foo{{"baz", "foo"}}, resp)
+}

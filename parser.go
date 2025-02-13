@@ -1,6 +1,7 @@
 package csv2structs
 
 import (
+	"bytes"
 	"encoding/csv"
 	"fmt"
 	"io"
@@ -26,6 +27,16 @@ func NewParser[T any](reader io.Reader, opts ...Option) (Parser[T], error) {
 	fields, err := getFields[T]()
 	if err != nil {
 		return nil, err
+	}
+
+	bom := make([]byte, 3)
+	_, err = reader.Read(bom)
+	if err != nil {
+		return nil, err
+	}
+
+	if !bytes.Equal(bom, []byte{0xEF, 0xBB, 0xBF}) {
+		reader = io.MultiReader(bytes.NewReader(bom), reader)
 	}
 
 	r := csv.NewReader(reader)
