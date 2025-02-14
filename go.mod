@@ -1,10 +1,10 @@
 module github.com/digitalocean-labs/csv2structs
 
-go 1.23.2
+go 1.23.5
 
 require (
-	github.com/stretchr/testify v1.9.0
-	golang.org/x/text v0.20.0
+	github.com/stretchr/testify v1.10.0
+	golang.org/x/text v0.22.0
 )
 
 require (
